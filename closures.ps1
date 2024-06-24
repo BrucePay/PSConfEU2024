@@ -1,11 +1,20 @@
 
+# ScriptBlock has a Module member... 
+{}.Module
+
 # Experimenting with NewBoundScriptBlock()
 
-$m = new-module { $count = 0 }
+$m = New-Module { $count = 0 }
 
-$sb = $m.NewBoundScriptBlock({$scope:x++})
+$sb = $m.NewBoundScriptBlock({($script:count++)})
 
 & $sb
+
+$sb.Module
+
+$sb.Module.SessionState
+
+& $sb.Module {$script:count = 0}
 
 $function:c1 = $sb
 
@@ -15,10 +24,9 @@ $function:c2 = $m.NewBoundScriptBlock({($script:x++)})
 
 c2
 
-# Experimenting with GetNewClosure()
+# Experimenting with the GetNewClosure() API
 
-function New-Counter {
-    $x = 0;
+function New-Counter ($x = 0) {
     {($script:x++)}.GetNewClosure()
 }
 
@@ -27,8 +35,10 @@ $function:c1 = new-counter
 c1
 
 # Create counter c2
-$function:c2 = new-counter
+$function:c2 = new-counter 100
 c2
+
+# What are closures good for?
 
 # Simplified Concurrency (but it doesn't actually work...)
 
