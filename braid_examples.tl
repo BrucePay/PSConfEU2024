@@ -12,7 +12,7 @@
 
 ; get total size of files, PowerShell style
 
-(ls -file | foreach-object | measure-object -sum | foreach sum)
+(ls -file | foreach-object "length" | measure-object -sum | foreach-object "sum")
 
 ; get total size of files, Braid style
 
